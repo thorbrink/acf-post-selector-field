@@ -28,10 +28,8 @@ class acf_field_post_selector extends acf_field
 			//'preview_size' => 'thumbnail'
 		);
 
-
 		// do not delete!
     parent::__construct();
-
 
     // settings
 		$this->settings = array(
@@ -39,7 +37,6 @@ class acf_field_post_selector extends acf_field
 			'dir' => apply_filters('acf/helpers/get_dir', __FILE__),
 			'version' => '1.0.0'
 		);
-
 	}
 
 
@@ -91,7 +88,31 @@ class acf_field_post_selector extends acf_field
 				    	'choices' =>  $post_types
 				    )); ?>
 			</td>
-		</tr> <?php
+		</tr>
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e("Taxonomies", 'acf-post-selector'); ?></label>
+				<p class="description"><?php _e("Selected Taxonomies will appear in the field.", 'acf-post-selector'); ?></p>
+			</td>
+			<td>
+				<?php
+				    $taxonomies 			= get_taxonomies('', 'objects');
+				    $sanitized_taxonomies 	= array();
+				    
+				    foreach($taxonomies as $taxonomy)
+				    {
+						$sanitized_taxonomies[$taxonomy->name] = $taxonomy->label;
+				    }
+				    
+				    do_action('acf/create_field', array(
+				    	'type'    =>  'checkbox',
+				    	'name'    =>  'fields[' . $key . '][taxonomies]',
+				    	'value'   =>  $field['taxonomies'],
+				    	'layout'  =>  'horizontal',
+				    	'choices' =>  $sanitized_taxonomies
+				    )); ?>
+			</td>
+		</tr><?php
 	}
 
 
@@ -118,11 +139,10 @@ class acf_field_post_selector extends acf_field
 
 
 		// create Field HTML
-		
 		// Get posts to be shown in select box.
 		$posts = $this->get_posts($field);
+		$taxonomies = $this->get_taxonomies($field);
 		?>
-		
 		<select class="post-selector" name="<?php echo $field['name'] ?>">
 
 			<option value=""><?php _e('None', 'acf-post-selector') ?></option>
@@ -135,9 +155,27 @@ class acf_field_post_selector extends acf_field
 
 					<?php foreach( $post_type_posts as $post ) : ?>
 
-						<?php $selected = ((int)$field['value'] === $post->ID) ? 'selected' : '' ?>
+						<?php $selected = ($field['value'] === 'post-' . $post->ID) ? 'selected' : '' ?>
 
-						<option <?php echo $selected ?> value="<?php echo $post->ID ?>"><?php echo $post->post_title ?></option>
+						<option <?php echo $selected ?> value="<?php echo 'post-' . $post->ID ?>"><?php echo $post->post_title ?></option>
+
+					<?php endforeach ?>
+
+				</optgroup>
+
+			<?php endforeach ?>
+			
+			<?php foreach($taxonomies as $taxonomy => $terms) : ?>
+
+				<?php $taxonomy_object = get_taxonomy($taxonomy); $taxonomy_name = $taxonomy_object->label; ?>
+
+				<optgroup label="<?php echo $taxonomy_name ?>">
+
+					<?php foreach( $terms as $term ) : ?>
+
+						<?php $selected = ( $field['value'] === 'term-' . $term->term_id ) ? 'selected' : '' ?>
+
+						<option <?php echo $selected ?> value="<?php echo 'term-' . $term->term_id ?>"><?php echo $term->name ?></option>
 
 					<?php endforeach ?>
 
@@ -424,8 +462,21 @@ class acf_field_post_selector extends acf_field
 		
 		return $posts;
 	}
-
-
+	
+	function get_taxonomies($field)
+	{
+		$taxonomies = array();
+		
+		if( $field['taxonomies'] )
+		{
+			foreach( $field['taxonomies'] as $taxonomy )
+			{				
+				$taxonomies[$taxonomy] = get_terms( $taxonomy );
+			}
+		}
+		
+		return $taxonomies;
+	}
 }
 
 new acf_field_post_selector();
