@@ -112,6 +112,22 @@ class acf_field_post_selector extends acf_field
 				    	'choices' =>  $sanitized_taxonomies
 				    )); ?>
 			</td>
+		</tr>
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e("Show as checkboxes", 'acf-post-selector'); ?></label>
+				<p class="description"><?php _e("Available posts and taxonomies will be selectable through checkboxes instead of a list.", 'acf-post-selector'); ?></p>
+			</td>
+			<td>
+				<?php				    
+				    do_action('acf/create_field', array(
+				    	'type'    =>  'checkbox',
+				    	'name'    =>  'fields[' . $key . '][show_as_checkboxes]',
+				    	'value'   =>  $field['show_as_checkboxes'],
+				    	'layout'  =>  'horizontal',
+				    	'choices' =>  array(1 => __("Yes", 'acf-post-selector'))
+				    )); ?>
+			</td>
 		</tr><?php
 	}
 
@@ -142,8 +158,9 @@ class acf_field_post_selector extends acf_field
 		// Get posts to be shown in select box.
 		$posts = $this->get_posts($field);
 		$taxonomies = $this->get_taxonomies($field);
+		
 		?>
-		<select class="post-selector" name="<?php echo $field['name'] ?>">
+		<select class="post-selector" name="<?php echo $field['name'] ?>[]" <?php echo ( $field['show_as_checkboxes'] !== '' )? 'multiple' : '' ?>>
 
 			<option value=""><?php _e('None', 'acf-post-selector') ?></option>
 
@@ -174,6 +191,7 @@ class acf_field_post_selector extends acf_field
 					<?php foreach( $terms as $term ) : ?>
 
 						<?php $selected = ( $field['value'] === 'term-' . $term->term_id ) ? 'selected' : '' ?>
+						<?php $selected = ( is_array($field['value']) && in_array('term-' . $term->term_id, $field['value']) ) ? 'selected' : '' ?>
 
 						<option <?php echo $selected ?> value="<?php echo 'term-' . $term->term_id ?>"><?php echo $term->name ?></option>
 
