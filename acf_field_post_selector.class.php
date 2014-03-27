@@ -160,7 +160,7 @@ class acf_field_post_selector extends acf_field
 		$taxonomies = $this->get_taxonomies($field);
 		
 		?>
-		<select class="post-selector" name="<?php echo $field['name'] ?>[]" <?php echo ( $field['show_as_checkboxes'] !== '' )? 'multiple' : '' ?>>
+		<select class="post-selector" name="<?php echo $field['name'] ?><?php echo ( $field['show_as_checkboxes'] !== '' )? '[]' : '' ?>" <?php echo ( $field['show_as_checkboxes'] !== '' )? 'multiple' : '' ?>>
 
 			<option value=""><?php _e('None', 'acf-post-selector') ?></option>
 
@@ -173,6 +173,7 @@ class acf_field_post_selector extends acf_field
 					<?php foreach( $post_type_posts as $post ) : ?>
 
 						<?php $selected = ($field['value'] === 'post-' . $post->ID) ? 'selected' : '' ?>
+						<?php $selected = ( is_array($field['value']) && in_array('post-' . $post->ID, $field['value']) ) ? 'selected' : '' ?>
 
 						<option <?php echo $selected ?> value="<?php echo 'post-' . $post->ID ?>"><?php echo $post->post_title ?></option>
 
