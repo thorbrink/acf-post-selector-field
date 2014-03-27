@@ -1,9 +1,11 @@
 jQuery( document ).ready(function($)
 {
-
-	$( '.post-selector' ).each(function()
+	$(document).on( 'acf/setup_fields', function()
 	{
-		$(this).select2();		
-	});
+		$( '.post-selector' ).each(function()
+		{
+			$(this).select2();
+		});
+	} );
 
 });

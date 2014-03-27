@@ -173,7 +173,7 @@ class acf_field_post_selector extends acf_field
 					<?php foreach( $post_type_posts as $post ) : ?>
 
 						<?php $selected = ($field['value'] === 'post-' . $post->ID) ? 'selected' : '' ?>
-						<?php $selected = ( is_array($field['value']) && in_array('post-' . $post->ID, $field['value']) ) ? 'selected' : '' ?>
+						<?php $selected = ( is_array($field['value']) && in_array('post-' . $post->ID, $field['value']) ) ? 'selected' : $selected ?>
 
 						<option <?php echo $selected ?> value="<?php echo 'post-' . $post->ID ?>"><?php echo $post->post_title ?></option>
 
@@ -222,20 +222,20 @@ class acf_field_post_selector extends acf_field
 	function input_admin_enqueue_scripts()
 	{
 		// Note: This function can be removed if not used
-
-
 		wp_register_script(
 			'select2',
 			$this->settings['dir'] . 'js/select2.js',
 			array('jquery'),
-			$this->settings['version']
+			$this->settings['version'],
+			true
 		);
 
 		wp_register_script(
 			'acf-input-post_selector',
 			$this->settings['dir'] . 'js/input.js',
 			array('acf-input', 'jquery', 'select2'),
-			$this->settings['version']
+			$this->settings['version'],
+			true
 		);
 		
 		wp_register_style(
