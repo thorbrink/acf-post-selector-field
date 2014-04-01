@@ -158,7 +158,6 @@ class acf_field_post_selector extends acf_field
 		// Get posts to be shown in select box.
 		$posts = $this->get_posts($field);
 		$taxonomies = $this->get_taxonomies($field);
-		
 		?>
 		<select class="post-selector" name="<?php echo $field['name'] ?><?php echo ( $field['show_as_checkboxes'] !== '' )? '[]' : '' ?>" <?php echo ( $field['show_as_checkboxes'] !== '' )? 'multiple' : '' ?>>
 
@@ -494,7 +493,7 @@ class acf_field_post_selector extends acf_field
 		{
 			foreach( $field['taxonomies'] as $taxonomy )
 			{				
-				$taxonomies[$taxonomy] = get_terms( $taxonomy );
+				$taxonomies[$taxonomy] = get_terms( $taxonomy, array( 'hide_empty' => false ) );
 			}
 		}
 		
