@@ -203,8 +203,13 @@ class acf_field_post_selector extends acf_field
 			
 		</select>
 		<br/>
-		<input type="checkbox" name="<?php echo $field['name'] ?>[get_archives]" value="1" <?php echo ( isset( $field['value']['get_archives'] ) && $field['value']['get_archives'] ) ? 'checked' : '' ?>/>
-		<label><?php _e( 'Get archives (will not fetch posts)', 'acf-post-selector' ) ?></label>
+		
+		<?php if( !$field['post_types'] ) : ?>
+
+			<input type="checkbox" name="<?php echo $field['name'] ?>[get_archives]" value="1" <?php echo ( isset( $field['value']['get_archives'] ) && $field['value']['get_archives'] ) ? 'checked' : '' ?>/>
+			<label><?php _e( 'Get archives (will not fetch posts)', 'acf-post-selector' ) ?></label>		
+
+		<?php endif ?>
 		
 		<?php
 	}
