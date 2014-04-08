@@ -204,14 +204,21 @@ class acf_field_post_selector extends acf_field
 		</select>
 		<br/>
 		
-		<?php if( !$field['post_types'] ) : ?>
-
-			<input type="checkbox" name="<?php echo $field['name'] ?>[get_archives]" value="1" <?php echo ( isset( $field['value']['get_archives'] ) && $field['value']['get_archives'] ) ? 'checked' : '' ?>/>
-			<label><?php _e( 'Get archives (will not fetch posts)', 'acf-post-selector' ) ?></label>		
-
-		<?php endif ?>
+		<?php if( $field['show_as_checkboxes'] !== '' )
+		{
+			do_action('acf/create_field', array(
+				'type'    		=>  'radio',
+				'name'    		=>  $field['name'].'[display_option]',
+				'value'   		=>  $field['value']['display_option'],
+				'layout'  		=>  'vertical',
+				'default_value'	=> '2',
+				'choices' 		=>  array(
+					'1'	=> __('Visa endast valda destinationer, teman och regioner'),
+					'2'	=> __('Visa endast destinationer, baserade på valda teman och regioner'),
+				)
+			));
+		}
 		
-		<?php
 	}
 
 
